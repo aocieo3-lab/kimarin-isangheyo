@@ -135,3 +135,28 @@ if st.button("한 줄 응원 받기"):
 
 st.markdown("----")
 st.caption("원하면 다른 스타일(더 공식적 / 더 유머러스)로도 출력해줄게. 코드는 streamlit만 쓰고 만들었음 — 바로 배포 가능! 😉")
+
+# app.py
+import streamlit as st
+
+st.set_page_config(page_title="MBTI 취향 추천 🍿📚", page_icon="✨", layout="centered")
+
+MBTI_RECS = {
+    "ISTJ": {
+        "books": [
+            ("아토믹 해빗 (Atomic Habits)", "작고 구체적인 습관의 힘을 보여주는 실용서 — 실천 중심인 ISTJ에게 딱! ✅"),
+            ("총, 균, 쇠 (Guns, Germs, and Steel)", "문명과 역사 흐름을 체계적으로 설명하는 책 — 사실 기반 분석 좋아하면 굿.")
+        ],
+        "movies": [
+            ("셜록 홈즈 (Sherlock Holmes)", "논리와 디테일로 문제를 푸는 이야기 — 정리 잘하는 너에게 추천 🔍"),
+            ("머니볼 (Moneyball)", "데이터와 원칙으로 승부하는 실화극 — 실용주의자 공감 100%")
+        ]
+    },
+    "ISFJ": {
+        "books": [
+            ("작은 것들의 신 (The Little Prince)", "따뜻하고 은유적인 이야기 — 사람과 관계에 민감한 ISFJ에게 힐링"),
+            ("연을 쫓는 아이 (The Kite Runner)", "감정 깊은 드라마 — 공감 능력 있는 사람에게 와닿음")
+        ],
+        "movies": [
+            ("월터의 상점
+
