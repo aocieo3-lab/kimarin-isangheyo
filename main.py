@@ -158,5 +158,97 @@ MBTI_RECS = {
             ("연을 쫓는 아이 (The Kite Runner)", "감정 깊은 드라마 — 공감 능력 있는 사람에게 와닿음")
         ],
         "movies": [
-            ("월터의 상점
+            ("월터의 상점(The Secret Life of Walter Mitty)", "모험과 자기발견 — 꿈꾸는 ENFP에게 추천 ✨"),
+            ("비포 선라이즈 (Before Sunrise)", "대화와 감정의 교감 중심 영화 — 사람과 이야기 좋아하면 굿")
+        ]
+    },
+    "ENTP": {
+        "books": [
+            ("블랙 스완 (The Black Swan 요약 느낌)", "불확실성과 창의적 사고를 좋아하는 사람에게"),
+            ("스티브 잡스 평전 (Steve Jobs)", "아이디어와 논쟁, 혁신에 관심 많다면 추천")
+        ],
+        "movies": [
+            ("맨체스터 바이 더 씨 (Manchester by the Sea)", "복잡한 인간관계와 감정—생각할 거리가 많음"),
+            ("소셜 네트워크 (The Social Network)", "아이디어+논쟁+빠른 전개 — 토론 좋아하면 굿")
+        ]
+    },
+    "ESTJ": {
+        "books": [
+            ("팀장처럼 생각하라 (Good to Great 요약 느낌)", "조직, 리더십, 실천 전략에 관심 있는 분께"),
+            ("How to Win Friends and Influence People (인간관계 실용서)", "사람 관리와 커뮤니케이션 팁")
+        ],
+        "movies": [
+            ("글래디에이터 (Gladiator)", "리더십·원칙·행동 중심 스토리 — 카리스마 좋아하면"),
+            ("킹스 스피치 (The King's Speech)", "책임과 성장에 관한 감동 실화")
+        ]
+    },
+    "ESFJ": {
+        "books": [
+            ("빨강 머리 앤 (Anne of Green Gables)", "사람과 관계 중심의 따뜻한 이야기 — 인간미 충만"),
+            ("작은 것들의 신 (The Little Prince)", "상대 배려와 감성에 공감하는 이에게")
+        ],
+        "movies": [
+            ("프라이드 앤 프리저디스 (Pride & Prejudice)", "관계·사회적 규범·로맨스 — 감동적"),
+            ("리틀 미스 선샤인 (Little Miss Sunshine)", "가족과 팀워크, 유머가 있는 드라마")
+        ]
+    },
+    "ENFJ": {
+        "books": [
+            ("리더의 조건 (Leaders Eat Last 요약 느낌)", "사람 이끄는 일, 공감 기반 리더십 좋아하면"),
+            ("연결의 기술 (The Tipping Point 요약 느낌)", "사회적 영향과 연결을 이해하고 싶을 때")
+        ],
+        "movies": [
+            ("쇼생크 탈출 (The Shawshank Redemption)", "희망과 리더십, 연대감 — 울컥함 보장"),
+            ("굿 윌 헌팅 (Good Will Hunting)", "성장과 치유, 멘토 관계에 감동")
+        ]
+    },
+    "ENTJ": {
+        "books": [
+            ("전략의 기술 (Competitive Strategy 요약 느낌)", "전략, 경쟁, 목표 지향적 사고 좋아하면"),
+            ("워런 버핏의 바른 투자 (요약 느낌)", "실용적 투자·결정 메커니즘에 관심 있는 사람")
+        ],
+        "movies": [
+            ("더 퍼스트 벤처 (The Founder 느낌)", "비즈니스와 추진력, 성공의 명암을 보여줌"),
+            ("인셉션 (Inception)", "복잡한 플랜과 리더십—전략가 기분 낼 수 있음")
+        ]
+    }
+}
+
+# Helper to ensure all 16 present (if not, fill with a fallback)
+ALL_MBTI = ["ISTJ","ISFJ","INFJ","INTJ","ISTP","ISFP","INFP","INTP",
+            "ESTP","ESFP","ENFP","ENTP","ESTJ","ESFJ","ENFJ","ENTJ"]
+
+for t in ALL_MBTI:
+    if t not in MBTI_RECS:
+        MBTI_RECS[t] = {
+            "books": [("추천 도서 A", "요약 설명 A"), ("추천 도서 B", "요약 설명 B")],
+            "movies": [("추천 영화 A", "요약 설명 A"), ("추천 영화 B", "요약 설명 B")]
+        }
+
+# UI
+st.title("MBTI 취향 추천기 🍿📚")
+st.write("MBTI 하나 골라줘~ 그러면 너 타입에 딱 맞는 책 2권이랑 영화 2편 추천해줄게. 알잘딱깔센으로! 😎")
+
+mbti = st.selectbox("너의 MBTI를 골라봐 (예: INFP)", ALL_MBTI)
+
+if st.button("추천해줘!"):
+    rec = MBTI_RECS.get(mbti)
+    st.subheader(f"{mbti} 추천 목록 ✨")
+    st.markdown("**도서 (Books)**")
+    for idx, (title, desc) in enumerate(rec["books"], start=1):
+        emoji = "📘" if idx == 1 else "📗"
+        st.markdown(f"- {emoji} **{title}** — {desc}")
+    st.markdown("---")
+    st.markdown("**영화 (Movies)**")
+    for idx, (title, desc) in enumerate(rec["movies"], start=1):
+        emoji = "🎬" if idx == 1 else "🍿"
+        st.markdown(f"- {emoji} **{title}** — {desc}")
+    st.markdown("---")
+    st.write("마음에 드는 거 있으면 나중에 줄거리나 줄임말(요약) 더 뽑아줄게. 귀찮으면 `다음` 버튼만 누르면 바로 다른 타입도 볼 수 있음 😉")
+else:
+    st.info("MBTI 선택 후 '추천해줘!' 버튼을 눌러줘~")
+
+# 작은 툴팁: 제목 클릭으로 깔끔하게 보기
+st.write("")
+st.caption("앱 제작: ChatGPT — 이모지랑 편한 말투 적용 완료. 필요하면 추천 리스트 수정하거나 장르 필터도 추가해줄게. ✌️")
 
