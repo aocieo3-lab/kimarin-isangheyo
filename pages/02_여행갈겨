@@ -1,132 +1,60 @@
 # streamlit_seoul_top10.py
-# Streamlit app that displays Seoul's top 10 tourist spots popular with foreign visitors using folium.
-# This single-file app also writes a requirements.txt when run (so you have both files on Streamlit Cloud).
-
 import streamlit as st
-from streamlit_folium import st_folium
 import folium
-import webbrowser
-import os
+from streamlit_folium import st_folium
+from folium.plugins import MarkerCluster
 
-st.set_page_config(page_title="Seoul: Top 10 for Foreign Visitors", layout="wide")
+st.set_page_config(page_title="Seoul: Top 10 Tourist Spots", layout="wide")
 
-st.title("Seoul — Top 10 Tourist Spots (popular with foreign visitors)")
-st.write("Interactive Folium map showing 10 popular places foreigners often visit in Seoul. Click markers for a short description and a Google Maps link.")
+st.title("🗺️ 외국인들이 좋아하는 서울 관광지 TOP 10")
+st.write("서울의 인기 관광지를 지도에서 한눈에 볼 수 있어요! 선택하면 해당 위치로 바로 이동합니다 👇")
 
-# Center map roughly on Seoul
-seoul_center = (37.5665, 126.9780)
-
-# Top 10 list: name, lat, lon, short description
-# Coordinates sourced from public geographic resources (Wikipedia / map sites).
+# 관광지 정보
 PLACES = [
-    {
-        "name": "Gyeongbokgung Palace",
-        "lat": 37.579884,
-        "lon": 126.9768,
-        "desc": "Historic main royal palace of the Joseon dynasty."
-    },
-    {
-        "name": "Changdeokgung Palace",
-        "lat": 37.57944,
-        "lon": 126.99278,
-        "desc": "UNESCO-listed palace known for its Secret Garden (Huwon)."
-    },
-    {
-        "name": "Bukchon Hanok Village",
-        "lat": 37.582178,
-        "lon": 126.983256,
-        "desc": "Traditional hanok neighborhood with narrow alleys and tea houses."
-    },
-    {
-        "name": "Insadong",
-        "lat": 37.5727,
-        "lon": 126.9869,
-        "desc": "Cultural shopping street with crafts, galleries and tea houses."
-    },
-    {
-        "name": "Myeong-dong",
-        "lat": 37.564,
-        "lon": 126.985,
-        "desc": "Major shopping district popular for cosmetics, street food and nightlife."
-    },
-    {
-        "name": "N Seoul Tower (Namsan Tower)",
-        "lat": 37.55117,
-        "lon": 126.988228,
-        "desc": "Iconic observation tower on Namsan mountain with panoramic views."
-    },
-    {
-        "name": "Hongdae (Hongik University area)",
-        "lat": 37.55528,
-        "lon": 126.92333,
-        "desc": "Youthful neighborhood famous for indie music, cafes and street performances."
-    },
-    {
-        "name": "Dongdaemun Design Plaza (DDP)",
-        "lat": 37.5669,
-        "lon": 127.0094,
-        "desc": "Futuristic cultural complex by Zaha Hadid, shopping and exhibitions."
-    },
-    {
-        "name": "Lotte World Tower & Mall (Jamsil)",
-        "lat": 37.512779,
-        "lon": 127.10257,
-        "desc": "South Korea's tallest building with observation deck and shopping mall."
-    },
-    {
-        "name": "Itaewon",
-        "lat": 37.533,
-        "lon": 126.983,
-        "desc": "Multicultural district known for international restaurants, nightlife and shops."
-    }
+    {"name": "경복궁", "lat": 37.579884, "lon": 126.9768, "desc": "조선시대의 대표적인 궁궐"},
+    {"name": "창덕궁", "lat": 37.57944, "lon": 126.99278, "desc": "유네스코 세계문화유산, 비밀의 정원으로 유명"},
+    {"name": "북촌한옥마을", "lat": 37.582178, "lon": 126.983256, "desc": "전통 한옥이 잘 보존된 마을"},
+    {"name": "인사동", "lat": 37.5727, "lon": 126.9869, "desc": "전통 공예품, 찻집 거리"},
+    {"name": "명동", "lat": 37.564, "lon": 126.985, "desc": "쇼핑과 길거리 음식의 중심지"},
+    {"name": "남산 N서울타워", "lat": 37.55117, "lon": 126.988228, "desc": "서울의 랜드마크 전망대"},
+    {"name": "홍대", "lat": 37.55528, "lon": 126.92333, "desc": "젊음과 예술의 거리"},
+    {"name": "동대문디자인플라자 (DDP)", "lat": 37.5669, "lon": 127.0094, "desc": "미래적인 건축물, 디자인 전시 중심"},
+    {"name": "롯데월드타워", "lat": 37.512779, "lon": 127.10257, "desc": "123층 초고층 랜드마크"},
+    {"name": "이태원", "lat": 37.533, "lon": 126.983, "desc": "다문화 거리, 외국인 인기 지역"},
 ]
 
-# Create folium map
-m = folium.Map(location=seoul_center, zoom_start=12, control_scale=True)
+# 사이드바
+st.sidebar.header("🧭 관광지 선택")
+options = ["서울 중심"] + [p["name"] for p in PLACES]
+selected = st.sidebar.selectbox("지도를 이동할 장소를 선택하세요:", options)
 
-# Add markers
+# 지도 중심 좌표
+if selected == "서울 중심":
+    center = (37.5665, 126.9780)
+    zoom = 12
+else:
+    p = next(item for item in PLACES if item["name"] == selected)
+    center = (p["lat"], p["lon"])
+    zoom = 15
+
+# 지도 생성
+m = folium.Map(location=center, zoom_start=zoom)
+cluster = MarkerCluster().add_to(m)
+
 for p in PLACES:
-    popup_html = f"<b>{p['name']}</b><br>{p['desc']}<br><a target='_blank' href='https://www.google.com/maps/search/?api=1&query={p['lat']},{p['lon']}'>Open in Google Maps</a>"
+    popup_html = f"<b>{p['name']}</b><br>{p['desc']}<br><a href='https://www.google.com/maps?q={p['lat']},{p['lon']}' target='_blank'>Google Maps 보기</a>"
     folium.Marker(
-        location=(p['lat'], p['lon']),
-        popup=folium.Popup(popup_html, max_width=300),
-        tooltip=p['name']
-    ).add_to(m)
+        location=(p["lat"], p["lon"]),
+        popup=popup_html,
+        tooltip=p["name"]
+    ).add_to(cluster)
 
-# Optional: add circle for city center
-folium.Circle(location=seoul_center, radius=2000, fill=False, weight=1.2, dash_array='5').add_to(m)
+# Streamlit에 표시
+st_data = st_folium(m, width=900, height=600)
 
-# Display map in Streamlit
-st.subheader("Map")
-map_data = st_folium(m, width=900, height=600)
-
-# Sidebar with list + quick links
-st.sidebar.title("Top 10 — Quick list")
+# 관광지 리스트
+st.subheader("📍 TOP 10 관광지 목록")
 for i, p in enumerate(PLACES, start=1):
-    st.sidebar.markdown(f"**{i}. {p['name']}** — {p['desc']}  ")
-    if st.sidebar.button(f"Center map on {p['name']}", key=p['name']):
-        # If the user clicks, open Google Maps in new tab (Streamlit can't programmatically recenter folium map easily client-side here)
-        webbrowser.open_new_tab(f"https://www.google.com/maps/search/?api=1&query={p['lat']},{p['lon']}")
+    st.markdown(f"**{i}. {p['name']}** — {p['desc']}")
 
-# Write requirements.txt file for Streamlit Cloud
-REQS = """
-streamlit
-folium
-streamlit-folium
-"""
-
-req_path = os.path.join(os.getcwd(), "requirements.txt")
-try:
-    with open(req_path, "w", encoding="utf-8") as f:
-        f.write(REQS.strip() + "\n")
-    st.success("requirements.txt written to the app folder (Streamlit Cloud will use it).")
-except Exception as e:
-    st.error(f"Could not write requirements.txt: {e}")
-
-st.info("Tip: Deploy this single file to Streamlit Cloud (app file name: streamlit_seoul_top10.py). The included requirements.txt will be used by Streamlit Cloud to install dependencies.")
-
-# Footer / credits
-st.markdown("---")
-st.caption("Coordinates used in this demo are taken from public map/Wikipedia sources and are approximate — good enough for marker placement in a visitor map.")
-
-# End of app
+st.caption("제작: ChatGPT | 데이터 출처: 서울시 관광정보, 위키피디아 등")
