@@ -57,4 +57,3 @@ st.subheader("📍 TOP 10 관광지 목록")
 for i, p in enumerate(PLACES, start=1):
     st.markdown(f"**{i}. {p['name']}** — {p['desc']}")
 
-st.caption("제작: ChatGPT | 데이터 출처: 서울시 관광정보, 위키피디아 등")
