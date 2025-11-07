@@ -130,5 +130,5 @@ st.plotly_chart(fig, use_container_width=True)
 # small data table
 with st.expander("원본 데이터 보기 (선택한 국가)"):
     st.write(pd.DataFrame({"MBTI": mbti_ordered, "Value": values_ordered}).set_index('MBTI'))
-    ModuleNotFoundError: No module named 'plotly'
+
 
