@@ -109,7 +109,14 @@ except Exception:
     sub[pop_col+'_num'] = pd.to_numeric(sub[pop_col], errors='coerce')
 
 # 집계: 같은 나이대가 여러 행이면 합계
-agg = sub.groupby(age_col+'_num', dropna=True)[pop_col+'_num'].sum().reset_index().dropna()
+agg = (
+    sub.groupby(age_col + '_num', dropna=True)[pop_col + '_num']
+    .sum()
+    .rename_axis(age_col + '_num_grouped')
+    .reset_index(name='population')
+)
+agg = agg.rename(columns={age_col + '_num_grouped': 'age'})
+
 agg = agg.sort_values(by=age_col+'_num')
 agg = agg.rename(columns={age_col+'_num':'age', pop_col+'_num':'population'})
 
